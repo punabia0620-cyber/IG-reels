@@ -1,0 +1,87 @@
+{
+  "batch": "samples_01",
+  "clips_root": "clips/raw",
+  "reels": [
+    {
+      "id": "s01_minnie_ears",
+      "hook": "We put Minnie ears on all 3 of them…",
+      "hook_secs": 3,
+      "clips": [
+        {"file": "IMG_9977.MOV", "start": 0.3, "dur": 3.2},
+        {"file": "IMG_0002.MOV", "start": 0.0, "dur": 3.0},
+        {"file": "IMG_0013.MOV", "start": 0.5, "dur": 3.5}
+      ],
+      "captions": [
+        {"text": "Contestant #1", "start": 0.3, "end": 3.2},
+        {"text": "Contestant #2", "start": 3.2, "end": 6.2},
+        {"text": "Contestant #3", "start": 6.2, "end": 7.8},
+        {"text": "Who wore it best? Comment 1, 2 or 3 👇", "start": 7.8, "end": 9.7}
+      ],
+      "caption": "Minnie ears fashion show 🎀 Who wore it best — 1, 2 or 3? Wrong answers only 😂",
+      "hashtags": ["furbabies", "dogsofinstagram", "shihtzu", "dogfashion", "minnieears", "dogsofph", "reels"]
+    },
+    {
+      "id": "s02_sidewalk_runway",
+      "hook": "Her runway is the sidewalk 💅",
+      "clips": [
+        {"file": "IMG_9925.MOV", "start": 0.0, "dur": 3.0},
+        {"file": "IMG_9926.MOV", "start": 1.0, "dur": 4.0},
+        {"file": "IMG_9928.MOV", "start": 3.0, "dur": 3.5},
+        {"file": "IMG_9926.MOV", "start": 16.0, "dur": 3.5}
+      ],
+      "captions": [
+        {"text": "Denim dress ✔️  Pink bow ✔️", "start": 3.5, "end": 7.0},
+        {"text": "Zero interest in walking slow", "start": 7.0, "end": 10.5},
+        {"text": "Rate her outfit 1–10 👇", "start": 10.5, "end": 14.0}
+      ],
+      "caption": "Mall walk, but make it fashion 💙 Rate the fit 1–10!",
+      "hashtags": ["furbabies", "dogsofinstagram", "shihtzu", "dogootd", "dogfashion", "dogsofph", "reels"]
+    },
+    {
+      "id": "s03_christmas_haul",
+      "hook": "Christmas came early for these 3 🎄🛒",
+      "clips": [
+        {"file": "IMG_0244.MOV", "start": 0.0, "dur": 2.5},
+        {"file": "IMG_0343.MOV", "start": 0.0, "dur": 3.0},
+        {"file": "IMG_0344.MOV", "start": 4.0, "dur": 3.5},
+        {"file": "IMG_0368.MOV", "start": 2.0, "dur": 3.5}
+      ],
+      "captions": [
+        {"text": "Inspector #1 approves", "start": 2.5, "end": 5.5},
+        {"text": "Inspector #2 is already eating", "start": 5.5, "end": 9.0},
+        {"text": "Inspector #3: \"is this all mine?\"", "start": 9.0, "end": 12.5}
+      ],
+      "caption": "Stocking up for the fur babies 🎁 Their faces say it all. Everything we got is in the basket 🧺",
+      "hashtags": ["furbabies", "dogsofinstagram", "doghaul", "spoileddog", "christmasdog", "dogsofph", "reels"],
+      "shopee_link": "PASTE_SHOPEE_AFFILIATE_LINK_HERE"
+    },
+    {
+      "id": "s04_belly_up",
+      "hook": "POV: you're a fur baby with zero responsibilities",
+      "hook_secs": 4,
+      "clips": [
+        {"file": "d35334b0.mov", "start": 0.0, "dur": 9.0}
+      ],
+      "captions": [
+        {"text": "No bills. No work. Just belly. 😴", "start": 4.5, "end": 9.0}
+      ],
+      "caption": "Living her best life, as usual 😴 Tag someone who sleeps like this!",
+      "hashtags": ["furbabies", "dogsofinstagram", "sleepydog", "shihtzu", "dogsofph", "reels"]
+    },
+    {
+      "id": "s05_grooming_day",
+      "hook": "Grooming day: guess who's the drama queen 😤",
+      "clips": [
+        {"file": "IMG_0400.MOV", "start": 0.0, "dur": 4.0},
+        {"file": "IMG_0401.MOV", "start": 6.0, "dur": 5.0},
+        {"file": "IMG_0402.MOV", "start": 0.0, "dur": 3.5}
+      ],
+      "captions": [
+        {"text": "The blow dryer is her nemesis", "start": 4.0, "end": 9.0},
+        {"text": "And this one just wants pets 🥹", "start": 9.0, "end": 12.5}
+      ],
+      "caption": "Spa day at home 🛁 One is a diva, one is a sweetheart. Who's your dog? 👇",
+      "hashtags": ["furbabies", "dogsofinstagram", "doggrooming", "shihtzu", "dogsofph", "reels"]
+    }
+  ]
+}

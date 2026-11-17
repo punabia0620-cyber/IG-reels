@@ -20,6 +20,7 @@ import subprocess
 import sys
 import tempfile
 import textwrap
+import unicodedata
 from pathlib import Path
 
 W, H, FPS = 1080, 1920, 30
@@ -45,10 +46,28 @@ def has_audio(path):
     return bool(res.stdout.strip())
 
 
+def hdr_transfer(path):
+    res = subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+         "stream=color_transfer", "-of", "csv=p=0", str(path)],
+        capture_output=True, text=True)
+    t = res.stdout.strip()
+    return t if t in ("arib-std-b67", "smpte2084") else None
+
+
+def tonemap_chain(transfer):
+    """iPhone HDR (HLG/PQ) -> normal SDR colors, so Reels don't look washed out."""
+    if not transfer:
+        return ""
+    return (f"zscale=tin={transfer}:min=bt2020nc:pin=bt2020:t=linear:npl=100,"
+            f"format=gbrpf32le,zscale=p=bt709,tonemap=hable:desat=0,"
+            f"zscale=t=bt709:m=bt709:r=tv,format=yuv420p,")
+
+
 def render_segment(src, start, dur, out):
     """Trim one clip and fit it to 9:16. Landscape/square clips get a blurred fill."""
     vf = (
-        f"[0:v]fps={FPS},split[a][b];"
+        f"[0:v]{tonemap_chain(hdr_transfer(src))}fps={FPS},split[a][b];"
         f"[a]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},boxblur=30:2,eq=brightness=-0.08[bg];"
         f"[b]scale={W}:{H}:force_original_aspect_ratio=decrease[fg];"
         f"[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1,format=yuv420p[v]"
@@ -63,6 +82,15 @@ def render_segment(src, start, dur, out):
             "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
             "-c:a", "aac", "-ar", "44100", "-ac", "2", "-shortest", str(out)]
     run(cmd)
+
+
+def strip_emoji(text):
+    """The on-screen font has no emoji glyphs (they render as boxes), so drop them.
+    Emoji stay in the post caption, where Instagram renders them."""
+    keep = [ch for ch in text
+            if ord(ch) <= 0xFFFF and unicodedata.category(ch) not in ("So", "Cs", "Mn")
+            and ch not in "\u200d\ufe0f"]
+    return " ".join("".join(keep).split())
 
 
 def text_filters(lines, y0, start, end, size, tmp, tag):
@@ -99,10 +127,10 @@ def build_reel(reel, out_dir, root):
         filters = []
         hook = reel.get("hook")
         if hook:
-            lines = textwrap.wrap(hook, 20)
+            lines = textwrap.wrap(strip_emoji(hook), 20)
             filters += text_filters(lines, HOOK_Y, 0, reel.get("hook_secs", 3.5), 70, tmp, "hook")
         for j, cap in enumerate(reel.get("captions", [])):
-            lines = textwrap.wrap(cap["text"], 24)
+            lines = textwrap.wrap(strip_emoji(cap["text"]), 24)
             filters += text_filters(lines, CAPTION_Y, cap["start"], cap["end"], 56, tmp, f"cap{j}")
         vf = ",".join(filters) if filters else "null"
 
@@ -118,7 +146,7 @@ def build_reel(reel, out_dir, root):
                     "-map", "[v]", "-map", "[a]"]
         else:
             cmd += ["-vf", vf, "-map", "0:v", "-map", "0:a"]
-        cmd += ["-t", str(total), "-c:v", "libx264", "-preset", "medium", "-crf", "19",
+        cmd += ["-t", str(total), "-c:v", "libx264", "-preset", "medium", "-crf", "19", "-maxrate", "12M", "-bufsize", "24M",
                 "-profile:v", "high", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "128k",
                 "-movflags", "+faststart", str(out)]
         run(cmd)
