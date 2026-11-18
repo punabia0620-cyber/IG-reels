@@ -23,6 +23,9 @@ import textwrap
 import unicodedata
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from ig_text import render_caption  # noqa: E402
+
 W, H, FPS = 1080, 1920, 30
 FONT = "/usr/share/fonts/opentype/inter/Inter-ExtraBold.otf"
 # Instagram covers roughly the top 14% and bottom 35% of a Reel with UI,
@@ -141,8 +144,15 @@ STYLES = {
 }
 
 
-def text_filters(text, y0, start, end, style, tmp, tag, pop=None):
-    """Centered text, one drawtext per line. pop=True scales the text in quickly."""
+IG_Y = {"top": int(H * 0.27), "middle": int(H * 0.40), "lower": int(H * 0.58)}
+
+
+def text_filters(text, y0, start, end, style, tmp, tag, pop=None, pos="top"):
+    """Centered text, one drawtext per line. pop=True scales the text in quickly.
+    style "ig" renders Instagram-native text (soft shadow, color emoji) as a PNG overlay."""
+    if style == "ig":
+        png = render_caption(text, tmp / f"{tag}.png", center_y=IG_Y[pos])
+        return [("overlay", png, start, end)]
     size, color, box, border = STYLES[style]
     width = {"title": 10, "meme": 18, "box": 24, "sub": 26, "plain": 24}[style]
     lines = [l for part in text.split("\n") for l in textwrap.wrap(strip_emoji(part), width)]
@@ -161,6 +171,8 @@ def text_filters(text, y0, start, end, style, tmp, tag, pop=None):
         )
     return filters
 
+
+PLAN_DEFAULTS = {}
 
 Y_POS = {"top": HOOK_Y, "middle": int(H * 0.40), "lower": CAPTION_Y}
 
@@ -182,14 +194,15 @@ def build_reel(reel, out_dir, root):
              "-c", "copy", str(joined)])
 
         filters = []
-        default = reel.get("text_style", "box")
+        default = reel.get("text_style", PLAN_DEFAULTS.get("text_style", "box"))
         hook = reel.get("hook")
         if hook:
             filters += text_filters(hook, HOOK_Y, 0, reel.get("hook_secs", 3.5),
-                                    reel.get("hook_style", default), tmp, "hook")
+                                    reel.get("hook_style", default), tmp, "hook",
+                                    pos=reel.get("hook_pos", "top"))
         for j, cap in enumerate(reel.get("captions", [])):
             filters += text_filters(cap["text"], Y_POS[cap.get("pos", "lower")], cap["start"], cap["end"],
-                                    cap.get("style", default), tmp, f"cap{j}")
+                                    cap.get("style", default), tmp, f"cap{j}", pos=cap.get("pos", "lower"))
         # Text attached to a clip is timed to that clip automatically.
         t0 = 0.0
         for i, c in enumerate(reel["clips"]):
@@ -198,22 +211,32 @@ def build_reel(reel, out_dir, root):
                 a = t0 + tx.get("at", 0)
                 b = t0 + seg_length(c) if "until" not in tx else t0 + tx["until"]
                 filters += text_filters(tx["text"], Y_POS[tx.get("pos", "lower")], round(a, 3), round(b, 3),
-                                        tx.get("style", default), tmp, f"c{i}t{k}")
+                                        tx.get("style", default), tmp, f"c{i}t{k}", pos=tx.get("pos", "lower"))
             t0 += seg_length(c)
-        vf = ",".join(filters) if filters else "null"
+        wm = reel.get("watermark", PLAN_DEFAULTS.get("watermark"))
+        if wm:
+            filters.append(("overlay", render_caption("", tmp / "wm.png", watermark=wm), 0, total))
+        draws = [f for f in filters if isinstance(f, str)]
+        overlays = [f for f in filters if not isinstance(f, str)]
 
         out = out_dir / f"{reel['id']}.mp4"
         cmd = ["ffmpeg", "-y", "-i", str(joined)]
+        for _, png, _, _ in overlays:
+            cmd += ["-i", str(png)]
+        graph = f"[0:v]{','.join(draws) if draws else 'null'}[v0]"
+        for n, (_, _, a, b) in enumerate(overlays):
+            graph += f";[v{n}][{n + 1}:v]overlay=0:0:enable='between(t,{a},{b})'[v{n + 1}]"
+        vlabel = f"[v{len(overlays)}]"
         music = reel.get("music")
         if music:
             vol = reel.get("music_volume", 0.35)
-            cmd += ["-stream_loop", "-1", "-i", str(root / music),
-                    "-filter_complex",
-                    f"[0:v]{vf}[v];[1:a]volume={vol},afade=t=out:st={max(total - 1, 0)}:d=1[m];"
-                    f"[0:a][m]amix=inputs=2:duration=first:normalize=0[a]",
-                    "-map", "[v]", "-map", "[a]"]
+            mi = len(overlays) + 1
+            cmd += ["-stream_loop", "-1", "-i", str(root / music)]
+            graph += (f";[{mi}:a]volume={vol},afade=t=out:st={max(total - 1, 0)}:d=1[m];"
+                      f"[0:a][m]amix=inputs=2:duration=first:normalize=0[a]")
+            cmd += ["-filter_complex", graph, "-map", vlabel, "-map", "[a]"]
         else:
-            cmd += ["-vf", vf, "-map", "0:v", "-map", "0:a"]
+            cmd += ["-filter_complex", graph, "-map", vlabel, "-map", "0:a"]
         cmd += ["-t", str(total), "-c:v", "libx264", "-preset", "medium", "-crf", "19", "-maxrate", "12M", "-bufsize", "24M",
                 "-profile:v", "high", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "128k",
                 "-movflags", "+faststart", str(out)]
@@ -243,6 +266,8 @@ def main():
     out_dir = Path(args.out) / plan.get("batch", plan_path.stem)
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    PLAN_DEFAULTS.clear()
+    PLAN_DEFAULTS.update({k: v for k, v in plan.items() if k in ("watermark", "text_style")})
     for reel in plan["reels"]:
         if args.only and reel["id"] != args.only:
             continue

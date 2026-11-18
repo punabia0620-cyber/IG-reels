@@ -1,0 +1,20 @@
+{
+  "batch": "memes_02",
+  "clips_root": "clips/raw",
+  "text_style": "ig",
+  "watermark": "@_melonmellowsmaiahdiaries",
+  "reels": [
+    {"id": "m01_doing_nothing", "hook": "me after doing absolutely nothing all day 😴", "hook_secs": 99,
+     "clips": [{"file": "d35334b0.mov", "start": 0.0, "dur": 6.5}],
+     "caption": "Exhausting day of being cute 😴", "hashtags": ["furbabies", "dogmemes", "sleepydog", "shihtzu", "relatable", "dogsofph"]},
+    {"id": "m04_diet_day1", "hook": "me on day 1 of my diet 🥲", "hook_secs": 99,
+     "clips": [{"file": "IMG_0344.MOV", "start": 3.0, "dur": 6.0}],
+     "caption": "Melon is being so strong right now 🥲 (she lasted 4 seconds)", "hashtags": ["furbabies", "dogmemes", "shihtzu", "relatable", "spoileddog", "dogsofph"]},
+    {"id": "m05_payday", "hook": "me when payday finally hits 💸😁", "hook_secs": 99,
+     "clips": [{"file": "IMG_9977.MOV", "start": 0.0, "dur": 5.0}],
+     "caption": "Maiah's payday face 💸😁", "hashtags": ["furbabies", "dogmemes", "pomspitz", "relatable", "payday", "dogsofph"]},
+    {"id": "m06_family_picture", "hook": "when mom dresses you up for the family picture 🎀🙄", "hook_secs": 99,
+     "clips": [{"file": "IMG_0002.MOV", "start": 0.0, "dur": 4.9}],
+     "caption": "Mellows did not consent to this 🎀", "hashtags": ["furbabies", "dogmemes", "shihtzu", "relatable", "funnydogs", "dogsofph"]}
+  ]
+}
