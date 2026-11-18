@@ -1,0 +1,154 @@
+{
+  "batch": "memes_01",
+  "clips_root": "clips/raw",
+  "text_style": "plain",
+  "reels": [
+    {
+      "id": "m01_doing_nothing",
+      "hook": "me after doing absolutely nothing all day",
+      "hook_secs": 99,
+      "clips": [
+        {
+          "file": "d35334b0.mov",
+          "start": 0.0,
+          "dur": 6.5
+        }
+      ],
+      "caption": "Exhausting day of being cute 😴",
+      "hashtags": [
+        "furbabies",
+        "dogmemes",
+        "sleepydog",
+        "shihtzu",
+        "relatable",
+        "dogsofph"
+      ]
+    },
+    {
+      "id": "m02_five_minutes",
+      "hook": "when they say \"it'll only take 5 minutes\"",
+      "hook_secs": 99,
+      "clips": [
+        {
+          "file": "IMG_0401.MOV",
+          "start": 11.5,
+          "dur": 5.0
+        }
+      ],
+      "caption": "Maiah has trust issues now 😒",
+      "hashtags": [
+        "furbabies",
+        "dogmemes",
+        "pomspitz",
+        "relatable",
+        "funnydogs",
+        "dogsofph"
+      ]
+    },
+    {
+      "id": "m03_fridge_2am",
+      "hook": "me walking to the fridge at 2am",
+      "hook_secs": 99,
+      "clips": [
+        {
+          "file": "IMG_9926.MOV",
+          "start": 1.0,
+          "dur": 5.5
+        }
+      ],
+      "caption": "Melon on a mission 🏃‍♀️💨",
+      "hashtags": [
+        "furbabies",
+        "dogmemes",
+        "shihtzu",
+        "relatable",
+        "funnydogs",
+        "dogsofph"
+      ]
+    },
+    {
+      "id": "m04_diet_day1",
+      "hook": "me on day 1 of my diet",
+      "hook_secs": 99,
+      "clips": [
+        {
+          "file": "IMG_0344.MOV",
+          "start": 3.0,
+          "dur": 6.0
+        }
+      ],
+      "caption": "Melon is being so strong right now 🥲 (she lasted 4 seconds)",
+      "hashtags": [
+        "furbabies",
+        "dogmemes",
+        "shihtzu",
+        "relatable",
+        "spoileddog",
+        "dogsofph"
+      ]
+    },
+    {
+      "id": "m04_diet_day1",
+      "hook": "me on day 1 of my diet",
+      "hook_secs": 99,
+      "clips": [
+        {
+          "file": "IMG_0344.MOV",
+          "start": 3.0,
+          "dur": 6.0
+        }
+      ],
+      "caption": "Melon is being so strong right now 🥲 (she lasted 4 seconds)",
+      "hashtags": [
+        "furbabies",
+        "dogmemes",
+        "shihtzu",
+        "relatable",
+        "spoileddog",
+        "dogsofph"
+      ]
+    },
+    {
+      "id": "m05_payday",
+      "hook": "me when payday finally hits",
+      "hook_secs": 99,
+      "clips": [
+        {
+          "file": "IMG_9977.MOV",
+          "start": 0.0,
+          "dur": 5.0
+        }
+      ],
+      "caption": "Maiah's payday face 💸😁",
+      "hashtags": [
+        "furbabies",
+        "dogmemes",
+        "pomspitz",
+        "relatable",
+        "payday",
+        "dogsofph"
+      ]
+    },
+    {
+      "id": "m06_family_picture",
+      "hook": "when mom dresses you up for the family picture",
+      "hook_secs": 99,
+      "clips": [
+        {
+          "file": "IMG_0002.MOV",
+          "start": 0.0,
+          "dur": 4.9
+        }
+      ],
+      "caption": "Mellows did not consent to this 🎀",
+      "hashtags": [
+        "furbabies",
+        "dogmemes",
+        "shihtzu",
+        "relatable",
+        "funnydogs",
+        "dogsofph"
+      ]
+    }
+  ]
+}

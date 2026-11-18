@@ -137,18 +137,21 @@ STYLES = {
     "meme":  (86, "white", False, 8),    # big white text, black outline
     "title": (150, "0xFFD60A", False, 10),  # huge yellow name card
     "sub":   (60, "white", False, 6),
+    "plain": (64, "white", False, 4),    # natural meme text, Instagram-native look
 }
 
 
-def text_filters(text, y0, start, end, style, tmp, tag, pop=True):
+def text_filters(text, y0, start, end, style, tmp, tag, pop=None):
     """Centered text, one drawtext per line. pop=True scales the text in quickly."""
     size, color, box, border = STYLES[style]
-    width = {"title": 10, "meme": 18, "box": 24, "sub": 26}[style]
-    lines = textwrap.wrap(strip_emoji(text), width)
+    width = {"title": 10, "meme": 18, "box": 24, "sub": 26, "plain": 24}[style]
+    lines = [l for part in text.split("\n") for l in textwrap.wrap(strip_emoji(part), width)]
     filters, step = [], int(size * 1.3)
     for i, line in enumerate(lines):
         tf = tmp / f"{tag}_{i}.txt"
         tf.write_text(line, encoding="utf-8")
+        if pop is None:
+            pop = style != "plain"
         fs = f"'{size}*min(1,0.55+(t-{start})*5)'" if pop else str(size)
         look = (f"box=1:boxcolor=white@0.92:boxborderw=18" if box
                 else f"borderw={border}:bordercolor=black")
