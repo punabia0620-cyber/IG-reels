@@ -1,0 +1,234 @@
+{
+  "batch": "samples_02",
+  "clips_root": "clips/raw",
+  "text_style": "meme",
+  "reels": [
+    {
+      "id": "v01_meet_the_cast",
+      "hook": "If my 3 dogs were in a sitcom",
+      "hook_secs": 1.6,
+      "clips": [
+        {
+          "file": "IMG_0085.MOV",
+          "start": 0.0,
+          "dur": 1.6,
+          "mute": true
+        },
+        {
+          "file": "IMG_9977.MOV",
+          "start": 0.2,
+          "dur": 1.4,
+          "zoom": 1.15,
+          "freeze": 1.6,
+          "flash": true,
+          "text": [
+            {
+              "text": "MAIAH",
+              "style": "title",
+              "pos": "top",
+              "at": 1.4
+            },
+            {
+              "text": "The Diva. Smiles only for the camera.",
+              "style": "sub",
+              "pos": "lower",
+              "at": 1.4
+            }
+          ]
+        },
+        {
+          "file": "IMG_0368.MOV",
+          "start": 1.0,
+          "dur": 1.4,
+          "zoom": 1.6,
+          "freeze": 1.6,
+          "flash": true,
+          "text": [
+            {
+              "text": "MELLOWS",
+              "style": "title",
+              "pos": "top",
+              "at": 1.4
+            },
+            {
+              "text": "The Foodie. Inspects every treat.",
+              "style": "sub",
+              "pos": "lower",
+              "at": 1.4
+            }
+          ],
+          "zoom_x": 0.95,
+          "zoom_y": 0.3
+        },
+        {
+          "file": "IMG_9904.MOV",
+          "start": 5.5,
+          "dur": 1.4,
+          "zoom": 1.7,
+          "freeze": 1.6,
+          "flash": true,
+          "text": [
+            {
+              "text": "MELON",
+              "style": "title",
+              "pos": "top",
+              "at": 1.4
+            },
+            {
+              "text": "The Princess. Only walks in designer.",
+              "style": "sub",
+              "pos": "lower",
+              "at": 1.4
+            }
+          ],
+          "zoom_x": 0.95,
+          "zoom_y": 0.35
+        },
+        {
+          "file": "IMG_0013.MOV",
+          "start": 8.0,
+          "dur": 2.2,
+          "mute": true,
+          "text": {
+            "text": "Which one are you?",
+            "style": "meme",
+            "pos": "top"
+          }
+        }
+      ],
+      "caption": "Every family has a Diva, a Foodie and a Princess 🎬 Which one are you — Maiah, Mellows or Melon? 👇\n\n🎵 Add a trending sitcom-intro sound when posting",
+      "hashtags": [
+        "furbabies",
+        "dogsofinstagram",
+        "shihtzu",
+        "pomspitz",
+        "dogfamily",
+        "dogsofph",
+        "funnydogs",
+        "reels"
+      ]
+    },
+    {
+      "id": "v02_celebrity_walk",
+      "hook": "Walking Melon like she's a celebrity",
+      "hook_secs": 2.0,
+      "clips": [
+        {
+          "file": "IMG_9925.MOV",
+          "start": 0.0,
+          "dur": 2.0,
+          "flash": true
+        },
+        {
+          "file": "IMG_9926.MOV",
+          "start": 1.2,
+          "dur": 1.2,
+          "zoom": 1.3,
+          "flash": true,
+          "text": {
+            "text": "No photos please",
+            "pos": "lower"
+          }
+        },
+        {
+          "file": "IMG_9928.MOV",
+          "start": 3.0,
+          "dur": 1.6,
+          "speed": 0.6,
+          "flash": true,
+          "text": {
+            "text": "*slow-mo hair flip*",
+            "pos": "lower"
+          },
+          "zoom": 1.6,
+          "zoom_y": 0.65
+        },
+        {
+          "file": "IMG_9926.MOV",
+          "start": 16.0,
+          "dur": 1.4,
+          "zoom": 1.25,
+          "flash": true
+        },
+        {
+          "file": "IMG_9904.MOV",
+          "start": 5.5,
+          "dur": 1.2,
+          "zoom": 1.7,
+          "freeze": 2.0,
+          "flash": true,
+          "text": [
+            {
+              "text": "Rate the outfit 1-10",
+              "style": "meme",
+              "pos": "lower",
+              "at": 1.2
+            }
+          ],
+          "zoom_x": 0.95,
+          "zoom_y": 0.35
+        }
+      ],
+      "caption": "Melon doesn't walk. She makes appearances 💅📸 Rate the outfit 1–10!\n\n🎵 Add a trending runway / paparazzi sound when posting",
+      "hashtags": [
+        "furbabies",
+        "dogsofinstagram",
+        "shihtzu",
+        "dogfashion",
+        "dogootd",
+        "dogsofph",
+        "funnydogs",
+        "reels"
+      ]
+    },
+    {
+      "id": "v03_maiah_betrayal",
+      "hook": "Telling Maiah it's just a quick blow dry",
+      "hook_secs": 2.5,
+      "clips": [
+        {
+          "file": "IMG_0400.MOV",
+          "start": 1.0,
+          "dur": 2.5
+        },
+        {
+          "file": "IMG_0401.MOV",
+          "start": 5.0,
+          "dur": 1.5,
+          "text": {
+            "text": "*turns on blow dryer*",
+            "pos": "lower"
+          }
+        },
+        {
+          "file": "IMG_0401.MOV",
+          "start": 12.6,
+          "dur": 1.0,
+          "zoom": 1.3,
+          "speed": 0.5,
+          "freeze": 2.2,
+          "text": [
+            {
+              "text": "I will remember this.",
+              "style": "meme",
+              "pos": "lower",
+              "at": 1.4
+            }
+          ],
+          "zoom_x": 0.1,
+          "zoom_y": 0.5
+        }
+      ],
+      "caption": "Maiah has filed a formal complaint 😤 Does your dog hate the blow dryer too?\n\n🎵 Add a dramatic / betrayal sound when posting",
+      "hashtags": [
+        "furbabies",
+        "dogsofinstagram",
+        "pomspitz",
+        "doggrooming",
+        "funnydogs",
+        "dogsofph",
+        "reels"
+      ]
+    }
+  ]
+}

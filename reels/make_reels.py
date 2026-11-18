@@ -64,23 +64,61 @@ def tonemap_chain(transfer):
             f"zscale=t=bt709:m=bt709:r=tv,format=yuv420p,")
 
 
-def render_segment(src, start, dur, out):
-    """Trim one clip and fit it to 9:16. Landscape/square clips get a blurred fill."""
+def atempo_chain(speed):
+    """atempo only accepts 0.5-2.0, so chain it for bigger changes."""
+    parts, sp = [], speed
+    while sp > 2.0:
+        parts.append("atempo=2.0"); sp /= 2.0
+    while sp < 0.5:
+        parts.append("atempo=0.5"); sp /= 0.5
+    parts.append(f"atempo={sp:.4f}")
+    return ",".join(parts)
+
+
+def seg_length(c):
+    return c["dur"] / c.get("speed", 1.0) + c.get("freeze", 0)
+
+
+def render_segment(src, c, out):
+    """Trim one clip, fit it to 9:16 and apply its effects.
+
+    Clip options: start, dur, speed (0.5 = slow-mo, 2 = fast), zoom (punch-in, e.g. 1.3),
+    freeze (seconds to hold the last frame), flash (white flash in), mute (drop audio).
+    Landscape/square clips get a blurred fill.
+    """
+    start, dur = c.get("start", 0), c["dur"]
+    speed, zoom = c.get("speed", 1.0), c.get("zoom", 1.0)
+    freeze, length = c.get("freeze", 0), seg_length(c)
+    post = []
+    if zoom != 1.0:
+        post.append(f"crop=iw/{zoom}:ih/{zoom}:(iw-iw/{zoom})*{c.get('zoom_x', 0.5)}:(ih-ih/{zoom})*{c.get('zoom_y', 0.5)},scale={W}:{H}")
+    if speed != 1.0:
+        post.append(f"setpts=PTS/{speed}")
+    if freeze:
+        post.append(f"tpad=stop_mode=clone:stop_duration={freeze}")
+    if c.get("flash"):
+        post.append("fade=t=in:st=0:d=0.25:color=white")
+    post_chain = ("," + ",".join(post)) if post else ""
     vf = (
         f"[0:v]{tonemap_chain(hdr_transfer(src))}fps={FPS},split[a][b];"
         f"[a]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},boxblur=30:2,eq=brightness=-0.08[bg];"
         f"[b]scale={W}:{H}:force_original_aspect_ratio=decrease[fg];"
-        f"[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1,format=yuv420p[v]"
+        f"[bg][fg]overlay=(W-w)/2:(H-h)/2,setsar=1{post_chain},format=yuv420p[v]"
     )
-    cmd = ["ffmpeg", "-y", "-ss", str(start), "-t", str(dur), "-i", str(src)]
-    if has_audio(src):
-        amap = ["-map", "0:a:0"]
+    cmd = ["ffmpeg", "-y", "-ss", str(start), "-t", str(dur), "-i", str(src),
+           "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo"]
+    if has_audio(src) and not c.get("mute"):
+        af = []
+        if speed != 1.0:
+            af.append(atempo_chain(speed))
+        af.append(f"apad=whole_dur={length}")
+        vf += f";[0:a:0]{','.join(af)}[aout]"
+        amap = ["-map", "[aout]"]
     else:
-        cmd += ["-f", "lavfi", "-t", str(dur), "-i", "anullsrc=r=44100:cl=stereo"]
         amap = ["-map", "1:a:0"]
-    cmd += ["-filter_complex", vf, "-map", "[v]", *amap,
+    cmd += ["-filter_complex", vf, "-map", "[v]", *amap, "-t", f"{length:.3f}",
             "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
-            "-c:a", "aac", "-ar", "44100", "-ac", "2", "-shortest", str(out)]
+            "-c:a", "aac", "-ar", "44100", "-ac", "2", str(out)]
     run(cmd)
 
 
@@ -93,19 +131,35 @@ def strip_emoji(text):
     return " ".join("".join(keep).split())
 
 
-def text_filters(lines, y0, start, end, size, tmp, tag):
-    """One drawtext per line: white rounded-look box, black text, centered."""
-    filters = []
-    step = int(size * 1.45)
+STYLES = {
+    # name: (fontsize, fontcolor, box, border)
+    "box":   (62, "black", True, 0),     # white box, black text
+    "meme":  (86, "white", False, 8),    # big white text, black outline
+    "title": (150, "0xFFD60A", False, 10),  # huge yellow name card
+    "sub":   (60, "white", False, 6),
+}
+
+
+def text_filters(text, y0, start, end, style, tmp, tag, pop=True):
+    """Centered text, one drawtext per line. pop=True scales the text in quickly."""
+    size, color, box, border = STYLES[style]
+    width = {"title": 10, "meme": 18, "box": 24, "sub": 26}[style]
+    lines = textwrap.wrap(strip_emoji(text), width)
+    filters, step = [], int(size * 1.3)
     for i, line in enumerate(lines):
         tf = tmp / f"{tag}_{i}.txt"
         tf.write_text(line, encoding="utf-8")
+        fs = f"'{size}*min(1,0.55+(t-{start})*5)'" if pop else str(size)
+        look = (f"box=1:boxcolor=white@0.92:boxborderw=18" if box
+                else f"borderw={border}:bordercolor=black")
         filters.append(
-            f"drawtext=fontfile={FONT}:textfile={tf}:fontsize={size}:fontcolor=black:"
-            f"box=1:boxcolor=white@0.92:boxborderw=18:"
-            f"x=(w-text_w)/2:y={y0 + i * step}:enable='between(t,{start},{end})'"
+            f"drawtext=fontfile={FONT}:textfile={tf}:fontsize={fs}:fontcolor={color}:{look}:"
+            f"x=(w-text_w)/2:y={y0 + i * step}-text_h/2+{size}/2:enable='between(t,{start},{end})'"
         )
     return filters
+
+
+Y_POS = {"top": HOOK_Y, "middle": int(H * 0.40), "lower": CAPTION_Y}
 
 
 def build_reel(reel, out_dir, root):
@@ -114,9 +168,9 @@ def build_reel(reel, out_dir, root):
         segs = []
         for i, c in enumerate(reel["clips"]):
             seg = tmp / f"seg{i:02d}.mp4"
-            render_segment(root / c["file"], c.get("start", 0), c["dur"], seg)
+            render_segment(root / c["file"], c, seg)
             segs.append(seg)
-        total = sum(c["dur"] for c in reel["clips"])
+        total = sum(seg_length(c) for c in reel["clips"])
 
         listfile = tmp / "list.txt"
         listfile.write_text("".join(f"file '{s}'\n" for s in segs))
@@ -125,13 +179,24 @@ def build_reel(reel, out_dir, root):
              "-c", "copy", str(joined)])
 
         filters = []
+        default = reel.get("text_style", "box")
         hook = reel.get("hook")
         if hook:
-            lines = textwrap.wrap(strip_emoji(hook), 20)
-            filters += text_filters(lines, HOOK_Y, 0, reel.get("hook_secs", 3.5), 70, tmp, "hook")
+            filters += text_filters(hook, HOOK_Y, 0, reel.get("hook_secs", 3.5),
+                                    reel.get("hook_style", default), tmp, "hook")
         for j, cap in enumerate(reel.get("captions", [])):
-            lines = textwrap.wrap(strip_emoji(cap["text"]), 24)
-            filters += text_filters(lines, CAPTION_Y, cap["start"], cap["end"], 56, tmp, f"cap{j}")
+            filters += text_filters(cap["text"], Y_POS[cap.get("pos", "lower")], cap["start"], cap["end"],
+                                    cap.get("style", default), tmp, f"cap{j}")
+        # Text attached to a clip is timed to that clip automatically.
+        t0 = 0.0
+        for i, c in enumerate(reel["clips"]):
+            texts = c.get("text", [])
+            for k, tx in enumerate(texts if isinstance(texts, list) else [texts]):
+                a = t0 + tx.get("at", 0)
+                b = t0 + seg_length(c) if "until" not in tx else t0 + tx["until"]
+                filters += text_filters(tx["text"], Y_POS[tx.get("pos", "lower")], round(a, 3), round(b, 3),
+                                        tx.get("style", default), tmp, f"c{i}t{k}")
+            t0 += seg_length(c)
         vf = ",".join(filters) if filters else "null"
 
         out = out_dir / f"{reel['id']}.mp4"
