@@ -19,7 +19,7 @@ IMG_0099, IMG_0137, IMG_0138, IMG_0153, IMG_9791 (only the first seconds are usa
 ## Style rules (from the owner)
 - Emoji: **iOS emoji only.** This machine can't render Apple emoji, so no emoji are burned into videos.
   Emoji go in the post caption (iPhones show them as iOS emoji) or are added in the Instagram app.
-- Watermark: big bold white `@_melonmellowsmaiahdiaries` at the bottom center with a dark outline
+- Watermark: small bold white `@_melonmellowsmaiahdiaries` at the very bottom center with a thin dark outline; the caption must stand out more than the watermark
   (the owner's own style). Don't copy other creators' watermark styles.
 - Liked format: relatable meme — one natural clip, one line of text, under ~7s, no flashy effects.
 - On-screen text: white bold sentence-case text with a soft shadow, upper-middle.

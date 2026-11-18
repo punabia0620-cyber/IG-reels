@@ -98,7 +98,7 @@ def strip_emoji(text):
     return " ".join("".join(s for is_e, s in _runs(text) if not is_e).split(" ")).strip()
 
 
-def render_caption(text, out_path, center_y=int(H * 0.27), size=56, watermark=None, allow_emoji=False):
+def render_caption(text, out_path, center_y=int(H * 0.27), size=64, watermark=None, allow_emoji=False):
     """allow_emoji=False (default): emoji are left out of the video. Only iOS emoji are
     acceptable on screen, and this machine can't draw them; they stay in the post caption."""
     if not allow_emoji:
@@ -123,12 +123,12 @@ def render_caption(text, out_path, center_y=int(H * 0.27), size=56, watermark=No
 
     if watermark:
         # Owner's watermark style: big bold white @handle near the bottom, dark outline.
-        wf = ImageFont.truetype(TEXT_FONT, 50)
+        wf = ImageFont.truetype(TEXT_FONT, 34)
         wl = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         wd = ImageDraw.Draw(wl)
         ww = wf.getlength(watermark)
-        wd.text(((W - ww) / 2, int(H * 0.855)), watermark, font=wf, fill=(255, 255, 255, 215),
-                stroke_width=3, stroke_fill=(40, 40, 40, 170))
+        wd.text(((W - ww) / 2, int(H * 0.945)), watermark, font=wf, fill=(255, 255, 255, 190),
+                stroke_width=2, stroke_fill=(40, 40, 40, 150))
         canvas.alpha_composite(wl)
 
     canvas.save(out_path)
